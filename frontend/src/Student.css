@@ -1,0 +1,213 @@
+/* Student.css */
+
+.student-container {
+  background-image: url('assets/Student.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  filter: brightness(50%);
+}
+
+.content {
+  text-align: left;
+  color: #000000;
+  margin-left: 200px;
+}
+
+
+.store-student-details {
+  font-size: 24px;
+  background: -webkit-linear-gradient(#ffeb7c, #297eff);
+-webkit-text-fill-color: black;
+  color: transparent;
+  display: inline-block;
+  padding: 10px 20px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background-color: white;
+  border-radius: 10px;
+  margin-left: 100px;
+}
+
+
+
+
+div .student-details {
+  /* margin-left: 100px; */
+  color: #fff;
+  margin-top: 150px;
+  border-radius: 50px; 
+  position: absolute; top: 0px; right: 200px;/* Adjust the margin value as needed */
+  font-size: 24px;
+  background: -webkit-linear-gradient(#8b6b8f, #a2a3df);
+-webkit-text-fill-color: black;
+  color: transparent;
+  text-align: center;
+  display: inline-block;
+  padding: 10px 20px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background-color: white;
+  border-radius: 10px;
+
+}
+
+
+
+/* Style for "Student Details" text */
+.content h2 {
+  margin-right: 50px; /* Adjust the margin to center with text fields */
+  background-color: white;
+  margin-left: 200px;
+  margin-top: 300px;
+}
+
+/* Style for text labels */
+.form-group label {
+  color: #000000;
+  background-color: #b1ff9d;
+  border-radius: 10px;
+  margin-right: 10px; /* Add spacing between labels and input fields */
+  font-weight: bold;
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+
+
+/* Style for text fields */
+.form-group input[type="text"] {
+  border: 3px solid #000;
+  border-radius: 5px;
+  height: 50px;
+  line-height: normal;
+  color: #282828;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  user-select: auto;
+  font-size: 16px;
+  padding: 0 6px;
+  padding-left: 12px;
+  :focus{
+      border: 3px solid #5551ff;
+  }
+}
+
+/* Style for "Submit" button */
+.form-group button[type="submit"] {
+  background-color: #ff9800;
+  color: #fff;
+  padding: 12.5px 25px; /* Make the button 1.25x bigger */
+  border: none;
+  cursor: pointer;
+  margin-top: 20px; /* Add spacing between the last text field and the button */
+  margin-left: 100px; /* Move the button slightly to the right */
+  margin-right: 50px;
+  border-radius: 10px; /* Add curved border to the button */
+}
+
+/* Student.css */
+
+/* Add cool styles and animations for the delete button */
+.delete-button {
+background-color: #f44336; /* Red background color */
+color: white;
+border: none;
+padding: 8px 16px;
+border-radius: 4px;
+cursor: pointer;
+transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for color and scale */
+}
+
+.delete-button:hover {
+background-color: #d32f2f; /* Darker red on hover */
+transform: scale(1.1); /* Scale up on hover */
+}
+
+.table-container {
+display: flex;
+justify-content: center; /* Centers the table horizontally */
+position: absolute; top: 40px; right: 70px;
+margin: 80px 0; /* Adjust margins as needed */
+}
+
+.student-table {
+border-spacing: 0;
+border-radius: 10px;
+overflow: hidden;
+width: 100%; /* Table spans the full width of its container */
+margin-left: 410px; /* Shift the table slightly to the right */
+}
+.gradient-bg {
+background: linear-gradient(135deg, #f7dfcf, #ebe5d9);
+}
+
+.student-table tbody tr:hover {
+transform: scale(1.02);
+transition: transform 0.3s ease-in-out;
+}
+
+.button-container-student {
+  position: fixed; /* Fix the container to the viewport */
+  top: 20px; /* Adjust the distance from the top */
+  left: 0; /* Align the container to the left */
+  width: 100%; /* Make the container full width */
+  display: flex;
+  justify-content: space-between; /* Space out buttons */
+  padding: 0 20px; /* Add padding on left and right for spacing */
+  box-sizing: border-box; /* Include padding in the element's total width */
+}
+
+.button-container-teacher {
+  position: fixed; /* Fix the container to the viewport */
+  top: 20px; /* Adjust the distance from the top */
+  left: 0; /* Align the container to the left */
+  width: 100%; /* Make the container full width */
+  display: flex;
+  justify-content: space-between; /* Space out buttons */
+  padding: 0 20px; /* Add padding on left and right for spacing */
+  box-sizing: border-box; /* Include padding in the element's total width */
+}
+
+.button-63 {
+  align-items: center;
+  background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  display: flex;
+  font-family: Phantomsans, sans-serif;
+  font-size: 20px;
+  justify-content: center;
+  line-height: 1em;
+  min-width: 140px;
+  padding: 19px 24px;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button-63:active,
+.button-63:hover {
+  outline: 0;
+}
+
+@media (min-width: 768px) {
+  .button-63 {
+      font-size: 24px;
+      min-width: 196px;
+  }
+}

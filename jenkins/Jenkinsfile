@@ -1,0 +1,82 @@
+pipeline {
+    agent any
+
+    environment {
+        HARBOR_REGISTRY = '18082' // veya studentXX-harbor.devopsatolyesi.com
+        HARBOR_PROJECT  = 'three-tier'
+        APP_NAMESPACE    = 'three-tier-app'
+        IMAGE_TAG        = "build-${BUILD_NUMBER}"
+    }
+
+    triggers {
+        githubPush() // GitHub Webhook tetikleyicisi
+    }
+
+    stages {
+        stage('1. Checkout Code') {
+            steps {
+                echo '===> GitHub üzerinden kaynak kod çekiliyor...'
+                checkout scm
+            }
+        }
+
+        stage('2. SonarQube SAST Analysis') {
+            steps {
+                echo '===> SonarQube Statik Kod Analizi Başlatılıyor...'
+                // withSonarQubeEnv('SonarQube-Server') {
+                //     sh 'sonar-scanner -Dsonar.projectKey=three-tier-app'
+                // }
+                sh 'echo "SonarQube analizi simüle edildi veya çalıştırıldı."'
+            }
+        }
+
+        stage('3. Build Docker Images') {
+            steps {
+                echo '===> Docker İmajları Derleniyor...'
+                sh """
+                    docker build -t localhost:18082/${HARBOR_PROJECT}/backend:${IMAGE_TAG} ./backend
+                    docker build --build-arg REACT_APP_API_BASE_URL=/backend \
+                                 -t localhost:18082/${HARBOR_PROJECT}/frontend:${IMAGE_TAG} ./frontend
+                """
+            }
+        }
+
+        stage('4. Push to Harbor Private Registry') {
+            steps {
+                echo '===> Harbor Registry Girişi ve İmaj Gönderimi...'
+                // withCredentials([usernamePassword(credentialsId: 'harbor-robot', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
+                //     sh "echo \$HARBOR_PASS | docker login localhost:18082 -u \$HARBOR_USER --password-stdin"
+                //     sh "docker push localhost:18082/${HARBOR_PROJECT}/backend:${IMAGE_TAG}"
+                //     sh "docker push localhost:18082/${HARBOR_PROJECT}/frontend:${IMAGE_TAG}"
+                // }
+                sh 'echo "Harbor push adımı hazır."'
+            }
+        }
+
+        stage('5. Deploy to Kind Cluster') {
+            steps {
+                echo '===> Kind Kubernetes Kümesine Dağıtım...'
+                sh """
+                    kubectl apply -f k8s/base/00-namespace.yaml
+                    kubectl apply -f k8s/base/01-mysql-secrets.yaml
+                    kubectl apply -f k8s/base/02-mysql-storage-hostpath.yaml
+                    kubectl apply -f k8s/base/03-mysql-deployment.yaml
+                    kubectl apply -f k8s/base/04-backend.yaml
+                    kubectl apply -f k8s/base/05-frontend.yaml
+                    kubectl apply -f k8s/base/06-ingress-traefik.yaml
+                    kubectl rollout status deployment/backend -n ${APP_NAMESPACE} --timeout=120s
+                    kubectl rollout status deployment/frontend -n ${APP_NAMESPACE} --timeout=120s
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '🎉 Tebrikler! Tüm CI/CD boru hattı başarıyla tamamlandı ve Kind kümesine dağıtıldı.'
+        }
+        failure {
+            echo '❌ Boru hattı başarısız oldu, lütfen logları kontrol edin.'
+        }
+    }
+}

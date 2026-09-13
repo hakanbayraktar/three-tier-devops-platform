@@ -1,0 +1,50 @@
+/* src/components/credits.css */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+  }
+  
+  .credits-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker for better contrast */
+    padding: 10px 0;
+    z-index: 1000;
+  }
+  
+  .credits-wrapper {
+    display: flex;
+    width: max-content;
+    animation: scrollCredits 15s linear infinite;
+  }
+  
+  @keyframes scrollCredits {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  
+  .credits-item {
+    color: #ffffff; /* Bright yellow for high contrast */
+    font-size: 16px; /* Slightly larger font size */
+    font-weight: bold;
+    margin-right: 50px;
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(154, 108, 108, 0.8), 0 0 16px rgba(255, 255, 255, 0.6); /* Glowing effect */
+  }
+  
+  .credits-container:hover .credits-item {
+    color: #eeff00; /* Brighter yellow on hover */
+  }  

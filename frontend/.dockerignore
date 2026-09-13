@@ -1,0 +1,9 @@
+# Exclude node_modules directory
+node_modules/
+
+# Exclude specific files
+secret.txt
+config.yaml
+
+# Exclude all .log files
+*.log

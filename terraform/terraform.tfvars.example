@@ -1,0 +1,7 @@
+aws_region          = "us-east-1"
+cluster_name        = "three-tier-eks-cluster"
+environment         = "training"
+node_instance_types = ["t3.medium"]
+desired_nodes       = 2
+min_nodes           = 2
+max_nodes           = 3
