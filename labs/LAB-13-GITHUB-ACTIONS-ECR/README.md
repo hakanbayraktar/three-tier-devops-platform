@@ -28,11 +28,29 @@ aws ecr create-repository --repository-name three-tier-backend --region us-east-
 aws ecr create-repository --repository-name three-tier-frontend --region us-east-1
 ```
 
-### Adım 2: Kodu Pushlayarak Boru Hattını Tetikleyin
+### Adım 2: App Deploy Boru Hattını Tetikleyin (2 Farklı Seçenek)
+
+#### Seçenek A: Kodu Pushlayarak Otomatik Tetikleme
+`backend/` veya `frontend/` dizininde herhangi bir değişiklik yapıp `main` branch'ine pushladığınızda:
 ```bash
-git add .
-git commit -m "ci: test github actions build and push to ecr"
+git add backend/ frontend/
+git commit -m "feat: improve api performance and trigger app deploy"
 git push origin main
 ```
+`02 — AWS App (ECR Build & GitOps Deploy)` workflow'u otomatik olarak başlar.
 
-GitHub web arayüzünde **Actions** sekmesine giderek derleme ve ECR push adımlarını canlı olarak izleyin.
+#### Seçenek B: GitHub Actions Arayüzünden Manuel Tetikleme (workflow_dispatch)
+1. GitHub reponuzda **Actions** sekmesine gidin.
+2. Sol menüden **`02 — AWS App (ECR Build & GitOps Deploy)`** seçin.
+3. **Run workflow** butonuna tıklayın (İsteğe bağlı olarak özel bir imaj etiketi `v1.2.0` girebilirsiniz).
+
+---
+
+## 2. Boru Hattı Neler Yapar?
+
+1. **ECR Kontrolü:** ECR depoları (`three-tier-backend` ve `three-tier-frontend`) yoksa AWS CLI ile otomatik oluşturur.
+2. **Multi-Stage Build:** Backend ve Frontend Docker imajlarını derler.
+3. **İmaj Etiketleme & Push:** İmajları commit SHA'sı (örn: `sha-a1b2c3d`) ve `latest` etiketleriyle ECR'a gönderir.
+4. **GitOps Manifest Güncellemesi:** `k8s/eks/kustomization.yaml` dosyasındaki imaj etiketlerini yeni SHA ile günceller ve repoya otomatik commit atar (`[skip ci]`).
+5. **ArgoCD Entegrasyonu:** ArgoCD bu Git commit'ini anında algılayarak EKS kümesindeki podları kesintisiz (RollingUpdate) günceller.
+

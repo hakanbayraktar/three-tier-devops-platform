@@ -1,0 +1,100 @@
+name: 01 — AWS Infra (Terraform EKS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform Eylemi (plan, apply veya destroy)'
+        required: true
+        type: choice
+        default: 'apply'
+        options:
+          - plan
+          - apply
+          - destroy
+      auto_approve:
+        description: 'Onay sormadan uygula/sil (-auto-approve)'
+        required: true
+        type: boolean
+        default: true
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/01-aws-infra-terraform.yml'
+
+env:
+  AWS_REGION: us-east-1
+  TF_WORKING_DIR: './terraform'
+
+jobs:
+  terraform-infra:
+    name: Terraform EKS & VPC
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5
+
+      - name: Terraform Format Check
+        run: terraform fmt -check || true
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      # ------------------------------------------------------------------------
+      # PLAN Aşaması
+      # ------------------------------------------------------------------------
+      - name: Terraform Plan
+        if: ${{ github.event_name == 'push' || github.event.inputs.action == 'plan' || github.event.inputs.action == 'apply' }}
+        run: terraform plan -out=tfplan
+
+      # ------------------------------------------------------------------------
+      # APPLY Aşaması
+      # ------------------------------------------------------------------------
+      - name: Terraform Apply
+        if: ${{ (github.event_name == 'push' || github.event.inputs.action == 'apply') }}
+        run: |
+          if [ "${{ github.event.inputs.auto_approve }}" = "true" ] || [ "${{ github.event_name }}" = "push" ]; then
+            terraform apply -auto-approve tfplan
+          else
+            terraform apply tfplan
+          fi
+
+      # ------------------------------------------------------------------------
+      # DESTROY Aşaması (Yalnızca Manuel Seçilirse)
+      # ------------------------------------------------------------------------
+      - name: Terraform Destroy
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy' }}
+        run: terraform destroy -auto-approve
+
+      # ------------------------------------------------------------------------
+      # Kubeconfig Bağlantı Bilgisi Çıktısı
+      # ------------------------------------------------------------------------
+      - name: Output Connection Info
+        if: ${{ github.event_name == 'push' || github.event.inputs.action == 'apply' }}
+        run: |
+          echo "================================================================"
+          echo "✅ AWS EKS Altyapısı Başarıyla Kuruldu!"
+          echo "Ubuntu sunucunuzdan kümeye bağlanmak için şu komutu çalıştırın:"
+          terraform output -raw kubeconfig_connect_command || echo "aws eks update-kubeconfig --region us-east-1 --name three-tier-eks-cluster"
+          echo ""
+          echo "================================================================"

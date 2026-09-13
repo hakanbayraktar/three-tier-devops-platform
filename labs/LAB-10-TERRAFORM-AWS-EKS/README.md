@@ -75,7 +75,17 @@ Bağlantıyı doğrulayın:
 aws sts get-caller-identity
 ```
 
-### Adım 2: Terraform ile EKS Kümesini Başlatın
+### Adım 2: EKS Kümesini Başlatın (2 Farklı Seçenek)
+
+#### Seçenek A: GitHub Actions Infra Workflow ile (Önerilen / Tek Tıkla)
+1. GitHub reponuza gidin -> **Actions** sekmesini açın.
+2. Sol menüden **`01 — AWS Infra (Terraform EKS)`** workflow'unu seçin.
+3. **Run workflow** butonuna tıklayın:
+   * **Action:** `apply` (veya test için `plan`, eğitimi bitirip silmek için `destroy`)
+   * **Auto approve:** `true`
+4. Yaklaşık 10-12 dakika içinde kümeniz AWS `us-east-1` üzerinde otomatik olarak kurulacaktır.
+
+#### Seçenek B: Ubuntu Terminalinden Doğrudan Terraform ile
 ```bash
 cd terraform
 cp terraform.tfvars.example terraform.tfvars
@@ -85,7 +95,8 @@ terraform plan
 terraform apply -auto-approve
 ```
 > [!NOTE]
-> EKS kontrol düzlemi ve node group oluşumu yaklaşık **10-12 dakika** sürer.
+> EKS kontrol düzlemi ve worker node group oluşumu yaklaşık **10-12 dakika** sürer.
+
 
 ### Adım 3: Ubuntu'dan EKS Kümesine Kubeconfig ile Bağlanın
 Terraform çıktısından aldığınız bağlantı komutunu çalıştırın:

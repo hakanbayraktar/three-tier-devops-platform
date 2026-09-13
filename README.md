@@ -67,7 +67,22 @@ Tüm laboratuvarlar **birbirinden bağımsız** olarak çalıştırılabilir. İ
 
 ---
 
+## ⚙️ Ayrılmış AWS GitHub Actions İş Akışları (Workflows)
+
+AWS ortamındaki operasyonlar **Altyapı (Infra)** ve **Uygulama (App)** olarak iki bağımsız boru hattına ayrılmıştır:
+
+1. **`01 — AWS Infra (Terraform EKS)` (`.github/workflows/01-aws-infra-terraform.yml`):**
+   * AWS VPC, Subnet'ler, NAT Gateway, EKS Cluster (2x `t3.medium`) ve EBS CSI Driver kaynaklarını yönetir.
+   * `workflow_dispatch` ile elle tetiklenir (`action`: `plan`, `apply`, `destroy`).
+2. **`02 — AWS App (ECR Build & GitOps Deploy)` (`.github/workflows/02-aws-app-deploy.yml`):**
+   * Kod tabanındaki değişikliklerde (`backend/`, `frontend/`) imajları derler ve Amazon ECR'a pushlar.
+   * `k8s/eks/kustomization.yaml` imaj etiketini güncelleyerek GitOps tetikler.
+   * Kesinlikle altyapı koduna veya doğrudan EKS kümesine imperatif müdahale etmez.
+
+---
+
 ## ⚡ Hızlı Başlangıç (Docker Compose ile 1 Dakikada Çalıştırın)
+
 
 ```bash
 # 1. Depoyu klonlayın
